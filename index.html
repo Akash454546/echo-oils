@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECHO OIL - Pure Natural Oils</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom colors matching the design */
+        :root {
+            --primary-color: #38761D; /* Deep Green for accent */
+            --secondary-color: #557A46; /* Lighter Green */
+            --text-dark: #262626;
+            --whatsapp-green: #25D366;
+        }
+
+        /* Apply Inter font family and background color */
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: #f7f7f7;
+        }
+
+        /* Styling for the Hero section background image and overlay */
+        .hero-section {
+            background-image: url('oil.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .hero-overlay {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Highlight button style */
+        .btn-primary {
+            background-color: var(--primary-color);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Custom green accent text */
+        .text-accent {
+            color: var(--primary-color);
+        }
+
+        /* Fixed WhatsApp Icon Styling */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--whatsapp-green);
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 24px;
+            line-height: 60px;
+            z-index: 1000;
+            box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4);
+            transition: background-color 0.3s;
+        }
+        .whatsapp-float:hover {
+            background-color: #128C7E;
+        }
+
+        /* Floating Cart Button Style */
+        .cart-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 90px;
+            right: 20px;
+            background-color: #333;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 24px;
+            line-height: 60px;
+            z-index: 1000;
+            box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .cart-float:hover {
+            background-color: #000;
+        }
+        .cart-count {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 25px;
+            height: 25px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            font-size: 14px;
+            line-height: 25px;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* Modal Backdrop */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .modal-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-out;
+            max-height: 90vh; /* Ensure modal fits on mobile */
+            overflow-y: auto;
+        }
+        .modal-backdrop.active .modal-content {
+            transform: translateY(0);
+        }
+
+        /* FAQ Styling */
+        .faq-item {
+            border-bottom: 1px solid #ddd;
+        }
+        .faq-item summary {
+            cursor: pointer;
+            padding: 1rem 0;
+            font-weight: 600;
+            list-style: none; /* Hide default marker */
+            position: relative;
+        }
+        .faq-item summary::after {
+            content: '+';
+            position: absolute;
+            right: 0;
+            transition: transform 0.3s;
+        }
+        .faq-item[open] summary::after {
+            content: '−';
+            transform: rotate(180deg);
+        }
+        .faq-item p {
+            padding-bottom: 1rem;
+            color: #555;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="https://wa.me/917019991590?text=Hello%20Echo%20Oil,%20I%20have%20an%20inquiry%20about%20your%20products." 
+       target="_blank" 
+       class="whatsapp-float"
+       aria-label="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp my-float"></i>
+    </a>
+
+    <button id="cart-float-button" class="cart-float">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="cart-count" class="cart-count">0</span>
+    </button>
+
+    <div id="cart-modal-backdrop" class="modal-backdrop">
+        <div id="cart-modal-content" class="modal-content bg-white rounded-xl shadow-2xl p-6 w-11/12 md:w-2/3 lg:w-1/2">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-3xl font-bold text-accent">Your Order</h3>
+                <button type="button" id="close-cart-modal-button" class="text-gray-500 hover:text-gray-900 text-3xl">&times;</button>
+            </div>
+            
+            <div id="cart-items-container" class="space-y-4 max-h-64 overflow-y-auto pr-2">
+                <p id="empty-cart-message" class="text-center text-gray-500 py-4">Your cart is empty.</p>
+            </div>
+            
+            <div class="mt-6 pt-4 border-t border-gray-200">
+                <div class="flex justify-between font-bold text-xl mb-4">
+                    <span>Total Amount:</span>
+                    <span id="cart-total" class="text-accent">₹0.00</span>
+                </div>
+
+                <form id="checkout-form" class="space-y-4">
+                    <h4 class="text-xl font-semibold mt-6">Delivery Details</h4>
+                    
+                    <div>
+                        <label for="checkout-name" class="block text-sm font-medium text-gray-700">Your Full Name *</label>
+                        <input type="text" id="checkout-name" name="checkout_name" required 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-accent focus:border-accent">
+                    </div>
+ <div>
+                        <label for="checkout-address" class="block text-sm font-medium text-gray-700">Delivery Address *</label>
+                        <textarea id="checkout-address" name="checkout_address" rows="3" required
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-accent focus:border-accent"></textarea>
+                    </div>
+
+                    <div class="flex flex-col space-y-3">
+                        <button type="submit" id="checkout-button" class="w-full px-6 py-3 rounded-xl font-semibold text-white uppercase tracking-wider bg-green-500 hover:bg-green-600 transition duration-300 shadow-lg" disabled>
+                            Order on WhatsApp
+                        </button>
+                         <button type="button" id="continue-shopping-button" class="w-full px-6 py-3 rounded-xl font-semibold text-gray-700 uppercase tracking-wider bg-gray-200 hover:bg-gray-300 transition duration-300 shadow-md">
+                            Continue Shopping
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <header id="header" class="sticky top-0 z-50 bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-black tracking-wider text-accent">ECHO OIL</a>
+            <nav class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#home" class="nav-link text-gray-700 hover:text-accent transition duration-150">Home</a>
+                <a href="#info" class="nav-link text-gray-700 hover:text-accent transition duration-150">Details</a>
+                <a href="#products" class="nav-link text-gray-700 hover:text-accent transition duration-150">Products</a>
+                <a href="#faq" class="nav-link text-gray-700 hover:text-accent transition duration-150">FAQ</a>
+                <a href="#contact" class="px-5 py-2 rounded-full bg-black text-white hover:bg-gray-800 transition duration-300 shadow-md">CONTACT</a>
+            </nav>
+            <button id="menu-button" class="md:hidden p-2 text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent" aria-label="Toggle menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden absolute w-full bg-white shadow-lg py-2">
+            <a href="#home" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 mobile-nav-link">Home</a>
+            <a href="#info" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 mobile-nav-link">Details</a>
+            <a href="#products" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 mobile-nav-link">Products</a>
+            <a href="#faq" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 mobile-nav-link">FAQ</a>
+            <a href="#contact" class="block px-4 py-2 text-white bg-black hover:bg-gray-800 transition duration-300 mt-2 mobile-nav-link">CONTACT</a>
+        </div>
+    </header>
+<main>
+
+        <section id="home" class="hero-section text-white">
+            <div class="hero-overlay absolute inset-0"></div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center md:text-left">
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-4 leading-tight">Pure natural oils</h1>
+                <p class="text-xl md:text-2xl mb-8 font-light max-w-xl">
+                    Discover the finest oils for your needs
+                </p>
+                <a href="#products" class="inline-block px-8 py-3 rounded-xl font-semibold btn-primary text-white uppercase tracking-wider shadow-lg">
+                    View Products
+                </a>
+            </div>
+        </section>
+
+        <section id="about" class="py-16 md:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <p class="text-accent text-sm font-semibold uppercase tracking-widest">PURE & NATURAL OILS</p>
+                    <h2 class="text-4xl md:text-5xl font-bold leading-tight">Elevate your cooking experience</h2>
+                    <p class="text-lg text-gray-600">
+                        At Echo Oil, we offer a carefully curated selection of oils including groundnut, sesame, and coconut oil. Each product is sourced for its purity and quality, ensuring that every drop enhances your culinary creations. Our passion for natural ingredients drives us to provide oils that are not only delicious but also packed with health benefits, elevating your cooking experience to new heights.
+                    </p>
+                    <a href="#contact" class="inline-block text-accent font-medium hover:underline transition duration-200">
+                        Get in touch &rarr;
+                    </a>
+                </div>
+                <div class="rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.01] transition duration-500 ease-in-out">
+                    <img src="main.webp" 
+                         alt="Bottle of Groundnut Oil surrounded by nuts and baskets" 
+                         class="w-full h-auto object-cover"
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x600/557A46/ffffff?text=ECHO+OIL+Bottle+Placeholder';"
+                    >
+                </div>
+            </div>
+        </section>
+
+        <section id="info" class="py-16 md:py-24 bg-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="text-accent text-sm font-semibold uppercase tracking-widest mb-2">BENEFITS AND USES</p>
+                <h2 class="text-4xl md:text-5xl font-bold mb-12">More information about our pure oils</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg space-y-3">
+                        <h3 class="text-2xl font-bold text-accent">Groundnut Oil</h3>
+                        <p class="text-sm font-semibold text-gray-800">High Smoke Point, Rich in Vitamin E</p>
+                        <ul class="list-disc list-inside text-gray-600 text-sm space-y-1">
+                            <li>*Use:* Ideal for deep frying, sautéing, and stir-frying due to its high smoke point.</li>
+                            <li>*Health:* Contains unsaturated fats, promoting heart health.</li>
+                            <li>*Flavor:* Adds a subtle, nutty flavor without overpowering food.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg space-y-3">
+                        <h3 class="text-2xl font-bold text-accent">Sesame Oil</h3>
+                        <p class="text-sm font-semibold text-gray-800">Antioxidant Rich, Distinct Aroma</p>
+                        <ul class="list-disc list-inside text-gray-600 text-sm space-y-1">
+                            <li>*Use:* Perfect as a finishing oil, in dressings, marinades, and Asian cuisine.</li>
+                            <li>*Health:* Rich in antioxidants and has anti-inflammatory properties.</li>
+                            <li>*Flavor:* Deep, aromatic, and savory flavor profile.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg space-y-3">
+                        <h3 class="text-2xl font-bold text-accent">Coconut Oil</h3>
+                        <p class="text-sm font-semibold text-gray-800">Versatile, MCT Source</p>
+                        <ul class="list-disc list-inside text-gray-600 text-sm space-y-1">
+                            <li>*Use:* Great for baking, high-heat cooking, and as a natural moisturizer for skin/hair.</li>
+                            <li>*Health:* Excellent source of Medium-Chain Triglycerides (MCTs) for energy.</li>
+                            <li>*Flavor:* Mildly sweet and tropical when cold-pressed.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+ <section id="products" class="py-16 md:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="text-accent text-sm font-semibold uppercase tracking-widest mb-2">PURE OILS COLLECTION</p>
+                <h2 class="text-4xl md:text-5xl font-bold mb-12">Explore our range of oils</h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    <div class="product-card bg-white rounded-xl shadow-lg p-6 text-center transform hover:shadow-xl transition duration-300 flex flex-col items-center" data-product-id="P001">
+                        <div class="h-48 w-full flex justify-center items-center mb-4">
+                            <img src="groundnut.jpeg" 
+                                 alt="Bottle of Groundnut Oil with peanuts" 
+                                 class="rounded-lg object-contain h-full w-auto"
+                                 onerror="this.onerror=null; this.src='https://placehold.co/300x250/FACC15/ffffff?text=Groundnut+Oil+Placeholder';"
+                            >
+                        </div>
+                        <h3 class="product-name text-xl font-semibold mt-2">Groundnut oil</h3>
+                        <p class="text-gray-600 mb-4">Pure and flavorful groundnut oil.</p>
+                        
+                        <select class="product-size w-full px-3 py-2 border border-gray-300 rounded-md mb-3 bg-white" data-product-id="P001">
+                            </select>
+                        
+                        <div class="flex justify-between items-center w-full mb-4">
+                            <div class="flex items-center space-x-2">
+                                <button class="quantity-btn btn-primary text-white text-sm px-2 py-1 rounded-full w-8 h-8" data-action="decrease" data-product-id="P001" disabled>-</button>
+                                <span class="product-quantity font-bold text-lg" data-product-id="P001">0</span>
+                                <button class="quantity-btn btn-primary text-white text-sm px-2 py-1 rounded-full w-8 h-8" data-action="increase" data-product-id="P001">+</button>
+                            </div>
+                            <span class="product-price font-bold text-xl text-accent" data-product-id="P001">₹0.00</span>
+                        </div>
+
+                        <button data-product-id="P001" class="add-to-cart-btn w-full px-6 py-2 rounded-xl font-semibold btn-primary text-white uppercase tracking-wider shadow-lg text-sm">
+                            Add to Cart
+                        </button>
+                    </div>
+
+                    <div class="product-card bg-white rounded-xl shadow-lg p-6 text-center transform hover:shadow-xl transition duration-300 flex flex-col items-center" data-product-id="P002">
+                        <div class="h-48 w-full flex justify-center items-center mb-4">
+                             <img src="sesame.jpeg" 
+                                 alt="Bottle of Sesame Oil with sesame seeds" 
+                                 class="rounded-lg object-contain h-full w-auto"
+                                 onerror="this.onerror=null; this.src='https://placehold.co/300x250/CA8A04/ffffff?text=Sesame+Oil+Placeholder';"
+                            >
+                        </div>
+                        <h3 class="product-name text-xl font-semibold mt-2">Sesame oil</h3>
+                        <p class="text-gray-600 mb-4">Rich and aromatic sesame oil.</p>
+
+                        <select class="product-size w-full px-3 py-2 border border-gray-300 rounded-md mb-3 bg-white" data-product-id="P002">
+                            </select>
+
+                         <div class="flex justify-between items-center w-full mb-4">
+                            <div class="flex items-center space-x-2">
+                                <button class="quantity-btn btn-primary text-white text-sm px-2 py-1 rounded-full w-8 h-8" data-action="decrease" data-product-id="P002" disabled>-</button>
+                                <span class="product-quantity font-bold text-lg" data-product-id="P002">0</span>
+                                <button class="quantity-btn btn-primary text-white text-sm px-2 py-1 rounded-full w-8 h-8" data-action="increase" data-product-id="P002">+</button>
+                            </div>
+                            <span class="product-price font-bold text-xl text-accent" data-product-id="P002">₹0.00</span>
+                        </div>
+
+                        <button data-product-id="P002" class="add-to-cart-btn w-full px-6 py-2 rounded-xl font-semibold btn-primary text-white uppercase tracking-wider shadow-lg text-sm">
+                            Add to Cart
+                        </button>
+                    </div>
+
+                    <div class="product-card bg-white rounded-xl shadow-lg p-6 text-center transform hover:shadow-xl transition duration-300 flex flex-col items-center" data-product-id="P003">
+                        <div class="h-48 w-full flex justify-center items-center mb-4">
+                             <img src="coconut.jpeg" 
+                                 alt="Coconut oil in a jar with coconut halves" 
+                                 class="rounded-lg object-contain h-full w-auto"
+                                 onerror="this.onerror=null; this.src='https://placehold.co/300x250/10B981/ffffff?text=Coconut+Oil+Placeholder';"
+                            >
+                        </div>
+                        <h3 class="product-name text-xl font-semibold mt-2">Coconut oil</h3>
+                        <p class="text-gray-600 mb-4">Versatile and nourishing coconut oil.</p>
+
+                        <select class="product-size w-full px-3 py-2 border border-gray-300 rounded-md mb-3 bg-white" data-product-id="P003">
+                            </select>
+
+                         <div class="flex justify-between items-center w-full mb-4">
+                            <div class="flex items-center space-x-2">
+                                <button class="quantity-btn btn-primary text-white text-sm px-2 py-1 rounded-full w-8 h-8" data-action="decrease" data-product-id="P003" disabled>-</button>
+                                <span class="product-quantity font-bold text-lg" data-product-id="P003">0</span>
+                                <button class="quantity-btn btn-primary text-white text-sm px-2 py-1 rounded-full w-8 h-8" data-action="increase" data-product-id="P003">+</button>
+                            </div>
+                            <span class="product-price font-bold text-xl text-accent" data-product-id="P003">₹0.00</span>
+                        </div>
+
+                        <button data-product-id="P003" class="add-to-cart-btn w-full px-6 py-2 rounded-xl font-semibold btn-primary text-white uppercase tracking-wider shadow-lg text-sm">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+<section id="faq" class="py-16 md:py-24 bg-gray-100">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="text-accent text-sm font-semibold uppercase tracking-widest mb-2 text-center">COMMON QUESTIONS</p>
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center">Frequently Asked Questions</h2>
+
+                <div class="space-y-4">
+                    <details class="faq-item bg-white p-4 rounded-xl shadow-md">
+                        <summary>What is cold-pressed oil?</summary>
+                        <p>Cold-pressed oil is extracted naturally using a traditional method without heat or chemical solvents. This preserves the oil's nutritional value, flavor, and aroma better than refined methods, giving you a purer product.</p>
+                    </details>
+                    
+                    <details class="faq-item bg-white p-4 rounded-xl shadow-md">
+                        <summary>Are your oils suitable for deep frying?</summary>
+                        <p>Yes, our Groundnut Oil has a high smoke point, making it excellent for deep frying. Our Coconut Oil can also be used for high-heat cooking, while Sesame Oil is best reserved for low-heat finishing and dressings.</p>
+                    </details>
+
+                    <details class="faq-item bg-white p-4 rounded-xl shadow-md">
+                        <summary>How should I store the oils?</summary>
+                        <p>For best results and to maintain freshness, store the oils in a cool, dark place away from direct sunlight and heat. Keep the bottle tightly sealed when not in use.</p>
+                    </details>
+                    
+                    <details class="faq-item bg-white p-4 rounded-xl shadow-md">
+                        <summary>What is the shelf life of your oils?</summary>
+                        <p>Typically, our oils remain fresh for 6 to 9 months after opening, provided they are stored correctly. Please refer to the 'Best Before' date on the bottle for precise guidance.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-16 md:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-12">
+                
+                <div class="bg-white p-6 md:p-10 rounded-xl shadow-xl border border-gray-100">
+                    <p class="text-accent text-sm font-semibold uppercase tracking-widest mb-2">GET IN TOUCH</p>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-8">Send us a direct WhatsApp message</h2>
+                    
+                    <form id="whatsapp-contact-form" class="space-y-6">
+                        <div>
+                            <label for="contact-name" class="block text-sm font-medium text-gray-700">Name *</label>
+                            <input type="text" id="contact-name" name="contact_name" required placeholder="Jane Smith" 
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-accent focus:border-accent">
+                        </div>
+                        
+                        <div>
+                            <label for="contact-phone" class="block text-sm font-medium text-gray-700">Phone number (Required for WhatsApp) *</label>
+                            <input type="tel" id="contact-phone" name="contact_phone" required placeholder="91XXXXXXXXXX" 
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-accent focus:border-accent">
+                        </div>
+                        
+                        <div>
+                            <label for="contact-message" class="block text-sm font-medium text-gray-700">Your Message *</label>
+                            <textarea id="contact-message" name="contact_message" rows="4" required
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-accent focus:border-accent"></textarea>
+                        </div>
+                        
+                        <div>
+                            <button type="submit" class="w-full px-6 py-3 rounded-xl font-semibold text-white uppercase tracking-wider btn-primary shadow-lg">
+                                Send Message via WhatsApp
+                            </button>
+                        </div>
+                        <p class="text-center text-sm text-gray-500">
+                            *This sends a general inquiry. For ordering, use the cart icon.
+                        </p>
+                    </form>
+                </div>
+
+                <div class="space-y-8 p-6 md:p-10">
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-semibold mb-2">Contact Details</h3>
+                        <p class="flex items-center text-gray-700">
+                            <i class="fas fa-envelope w-5 h-5 mr-2 text-accent"></i>
+                            <a href="mailto:akashgowda4510@gmail.com" class="hover:underline">akashgowda4510@gmail.com</a>
+                        </p>
+                        <p class="flex items-center text-gray-700">
+                            <i class="fas fa-phone w-5 h-5 mr-2 text-accent"></i>
+                            +91 7019991590
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-semibold mb-2">Location</h3>
+                        <p class="flex items-center text-gray-700">
+                            <i class="fas fa-map-marker-alt w-5 h-5 mr-2 text-accent"></i>
+                            Bengaluru, KA IN
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold mb-2">Hours</h3>
+                        <ul class="space-y-1 text-gray-700 text-sm">
+                            <li class="flex justify-between"><span>Monday - Friday</span> <span>9:00am – 10:00pm</span></li>
+                            <li class="flex justify-between"><span>Saturday</span> <span>9:00am – 6:00pm</span></li>
+                            <li class="flex justify-between"><span>Sunday</span> <span>9:00am – 12:00pm</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+ <footer class="bg-black text-white py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            &copy; 2025 ECHO OIL. All rights reserved.
+        </div>
+    </footer>
+<script>
+        // --- CONFIGURATION & DATA MODEL ---
+
+        // IMPORTANT: Replace XXXXXXXXXX with the client's actual 10-digit WhatsApp number 
+        const WHATSAPP_NUMBER = '917019991590'; 
+        const CURRENCY_SYMBOL = '₹'; // Indian Rupee symbol
+
+        // Product data model including prices for different sizes (Updated to Indian Rupee equivalent sample prices)
+        const PRODUCTS = {
+            'P001': { 
+                name: 'Groundnut Oil', 
+                sizes: { '500ml': 180.00, '1kg': 350.00, '5kg': 1700.00 } // Sample INR prices
+            },
+            'P002': { 
+                name: 'Sesame Oil', 
+                sizes: { '500ml': 250.00, '1kg': 480.00, '5kg': 2300.00 } // Sample INR prices
+            },
+            'P003': { 
+                name: 'Coconut Oil', 
+                sizes: { '500ml': 160.00, '1kg': 300.00, '5kg': 1450.00 } // Sample INR prices
+            }
+        };
+
+        // Shopping Cart State
+        let cart = []; // Array of { id, name, size, price, quantity }
+
+        // --- UTILITY FUNCTIONS ---
+
+        function formatCurrency(amount) {
+            return CURRENCY_SYMBOL + amount.toFixed(2);
+        }
+
+        function encodeMessage(message) {
+            return encodeURIComponent(message);
+        }
+
+        function openWhatsApp(message) {
+            const url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeMessage(message); 
+            window.open(url, '_blank');
+        }
+
+        function calculateCartTotal() {
+            return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartCountElement = document.getElementById('cart-count');
+            cartCountElement.textContent = count;
+            cartCountElement.style.display = count > 0 ? 'block' : 'none';
+            // Enable/Disable checkout button based on cart items
+            const checkoutButton = document.getElementById('checkout-button');
+            if (checkoutButton) {
+                checkoutButton.disabled = cart.length === 0;
+            }
+            const emptyMessage = document.getElementById('empty-cart-message');
+            if (emptyMessage) {
+                emptyMessage.style.display = cart.length === 0 ? 'block' : 'none';
+            }
+        }
+
+        // --- PRODUCT INTERACTIONS ---
+
+        function initProductCards() {
+            document.querySelectorAll('.product-card').forEach(card => {
+                const productId = card.getAttribute('data-product-id');
+                const product = PRODUCTS[productId];
+                const selectElement = card.querySelector('.product-size');
+                const priceElement = card.querySelector('.product-price');
+                const quantityElement = card.querySelector('.product-quantity');
+                const addButton = card.querySelector('.add-to-cart-btn');
+
+                // 1. Populate sizes
+                selectElement.innerHTML = '<option value="" disabled selected>Select Size</option>';
+                for (const size in product.sizes) {
+                    const option = document.createElement('option');
+                    option.value = size;
+                    option.textContent = size + ' (' + formatCurrency(product.sizes[size]) + ')';
+                    selectElement.appendChild(option);
+                }
+
+                // 2. Initial state
+                let currentPrice = 0;
+                let currentQuantity = 0;
+
+                // Function to update local price and state on the card
+                function updateCardState() {
+                    const selectedSize = selectElement.value;
+                    if (selectedSize) {
+                        currentPrice = product.sizes[selectedSize];
+                        priceElement.textContent = formatCurrency(currentPrice * currentQuantity);
+                        
+                        // FIX: Keep Add to Cart enabled if a size is selected, 
+                        // as the click handler will show the alert if quantity is 0.
+                        addButton.disabled = false; 
+
+                    } else {
+                        currentPrice = 0;
+                        priceElement.textContent = formatCurrency(0);
+                        // FIX: Keep Add to Cart enabled even when no size is selected, 
+                        // so the click handler can show the "Select Size" alert.
+                        addButton.disabled = false; 
+                    }
+                    quantityElement.textContent = currentQuantity;
+
+                    // Enable/Disable Decrease button (only disabled if quantity is 0)
+                    const decreaseBtn = card.querySelector('.quantity-btn[data-action="decrease"]');
+                    decreaseBtn.disabled = currentQuantity === 0;
+                }
+
+                // 3. Size change listener
+                selectElement.addEventListener('change', () => {
+                    // Reset quantity to 1 when a size is newly selected (if it was 0)
+                    if (currentQuantity === 0) {
+                        currentQuantity = 1; 
+                    }
+                    updateCardState();
+                });
+                
+                // 4. Quantity button listener
+                card.querySelectorAll('.quantity-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        // *Size Selection Check for Quantity Buttons*
+                        if (!selectElement.value) {
+                             alert('Please choose the size of the item first to adjust the quantity.');
+                             return;
+                        }
+
+                        const action = btn.getAttribute('data-action');
+                        if (action === 'increase') {
+                            currentQuantity++;
+                        } else if (action === 'decrease' && currentQuantity > 0) {
+                            currentQuantity--;
+                        }
+                        updateCardState();
+                    });
+                });
+
+                // 5. Add to Cart Button Logic (FIXED TO ENSURE ALERTS FIRE)
+                addButton.addEventListener('click', () => {
+                     // 1. Check for Size Selection
+                    if (!selectElement.value) {
+                         alert('Please choose the size of the item first to add it to the cart.');
+                         return; // Stop execution
+                    }
+                    
+                    // 2. Check for Quantity
+                    if (currentQuantity === 0) {
+                        alert('Please increase the quantity above zero.');
+                        return; // Stop execution
+                    }
+                    
+                    // If we reach here, both size and quantity are valid
+                    const selectedSize = selectElement.value;
+                    
+                    // Create a unique identifier for the item (Product ID + Size)
+                    const itemId = productId + selectedSize; 
+
+                    const existingItemIndex = cart.findIndex(item => item.id === itemId);
+
+                    if (existingItemIndex !== -1) {
+                        // Item already exists, update quantity
+                        cart[existingItemIndex].quantity += currentQuantity;
+                    } else {
+                        // Add new item
+                        cart.push({
+                            id: itemId,
+                            productId: productId,
+                            name: product.name,
+                            size: selectedSize,
+                            price: currentPrice,
+                            quantity: currentQuantity
+                        });
+                    }
+                    
+                    // Reset card state after adding to cart
+                    currentQuantity = 0;
+                    selectElement.selectedIndex = 0; // Reset size selector
+                    updateCardState();
+                    
+                    // Update UI and show cart
+                    updateCartCount();
+                    showCartModal(); 
+                    console.log('Item added to cart:', cart);
+                });
+
+                // Initial UI setup
+                updateCardState();
+            });
+        }
+
+        // --- CART MODAL LOGIC ---
+
+        const cartModalBackdrop = document.getElementById('cart-modal-backdrop');
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const cartTotalElement = document.getElementById('cart-total');
+        const cartFloatButton = document.getElementById('cart-float-button');
+
+        // Function to render the cart contents
+        function renderCart() {
+            cartItemsContainer.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p id="empty-cart-message" class="text-center text-gray-500 py-4">Your cart is empty.</p>';
+            } else {
+                cart.forEach((item, index) => {
+                    const itemTotal = item.price * item.quantity;
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'flex justify-between items-center p-3 bg-gray-50 rounded-lg shadow-sm';
+                    itemElement.innerHTML = `
+                        <div class="flex-grow">
+                            <p class="font-semibold text-gray-800">${item.name} (${item.size})</p>
+                            <p class="text-sm text-gray-500">${formatCurrency(item.price)} per unit</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button class="cart-qty-btn bg-gray-200 hover:bg-gray-300 text-sm px-2 py-1 rounded-full" data-action="decrease" data-index="${index}">-</button>
+                            <span class="font-bold w-4 text-center">${item.quantity}</span>
+                            <button class="cart-qty-btn bg-gray-200 hover:bg-gray-300 text-sm px-2 py-1 rounded-full" data-action="increase" data-index="${index}">+</button>
+                            
+                            <span class="font-bold text-accent w-16 text-right">${formatCurrency(itemTotal)}</span>
+                            <button class="text-red-500 hover:text-red-700 ml-2" data-action="remove" data-index="${index}" title="Remove Item">
+                                <i class="fas fa-trash-alt text-sm"></i>
+                            </button>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(itemElement);
+                });
+
+                // Re-attach event listeners after rendering new HTML
+                document.querySelectorAll('.cart-qty-btn').forEach(btn => {
+                    btn.addEventListener('click', handleCartItemUpdate);
+                });
+
+                document.querySelectorAll('button[data-action="remove"]').forEach(btn => {
+                    btn.addEventListener('click', handleCartItemUpdate);
+                });
+            }
+
+            // Update footer total and count
+            cartTotalElement.textContent = formatCurrency(calculateCartTotal());
+            updateCartCount();
+        }
+
+        // Handler for quantity change and removal
+        function handleCartItemUpdate(e) {
+            e.preventDefault();
+            const button = e.currentTarget;
+            const action = button.getAttribute('data-action');
+            const index = parseInt(button.getAttribute('data-index'));
+
+            if (index >= 0 && index < cart.length) {
+                const item = cart[index];
+
+                if (action === 'increase') {
+                    item.quantity++;
+                } else if (action === 'decrease') {
+                    if (item.quantity > 1) {
+                        item.quantity--;
+                    } else {
+                        // Remove item if quantity goes to 0
+                        cart.splice(index, 1);
+                    }
+                } else if (action === 'remove') {
+                    // Remove item completely
+                    cart.splice(index, 1);
+                }
+                
+                // Re-render the cart to reflect changes
+                renderCart();
+            }
+        }
+
+        // Show/Hide Cart Modal
+        function showCartModal() {
+            renderCart();
+            cartModalBackdrop.classList.add('active');
+        }
+
+        document.getElementById('close-cart-modal-button').addEventListener('click', () => {
+            cartModalBackdrop.classList.remove('active');
+        });
+
+         // *Continue Shopping Button to scroll to products*
+         document.getElementById('continue-shopping-button').addEventListener('click', () => {
+            cartModalBackdrop.classList.remove('active');
+            // Scroll to the products section
+            const productsSection = document.getElementById('products');
+            if (productsSection) {
+                 productsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+
+        cartModalBackdrop.addEventListener('click', (e) => {
+            if (e.target === cartModalBackdrop) {
+                cartModalBackdrop.classList.remove('active');
+            }
+        });
+
+        // --- CHECKOUT LOGIC (WhatsApp Order) ---
+
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const customerName = document.getElementById('checkout-name').value.trim();
+            const address = document.getElementById('checkout-address').value.trim();
+            const total = formatCurrency(calculateCartTotal());
+
+            if (cart.length === 0) {
+                alert("Your cart is empty. Please add items before placing an order.");
+                return;
+            }
+
+            if (!customerName || !address) {
+                alert('Please fill in your Full Name and Delivery Address to proceed with the order.');
+                return;
+            }
+
+            // 1. Build Item List String
+            const itemsList = cart.map(item => {
+                const itemTotal = item.price * item.quantity;
+                return ` - ${item.quantity}x ${item.name} (${item.size}) @ ${formatCurrency(item.price)} = ${itemTotal}`;
+            }).join('\n');
+
+
+            // 2. Build the final WhatsApp message
+            const orderMessage = 
+`*NEW WEBSITE ORDER - PENDING CONFIRMATION*
+
+Customer Details:
+Name: ${customerName}
+Address: 
+${address}
+
+Order Summary:
+${itemsList}
+
+Estimated Total (Exc. Shipping): ${total}
+
+---
+*Please confirm availability, final price (including shipping), and delivery schedule.*`;
+
+            openWhatsApp(orderMessage);
+            
+            // 3. Close modal and clear cart (assuming client confirms order in WhatsApp)
+            cartModalBackdrop.classList.remove('active');
+            cart = [];
+            document.getElementById('checkout-form').reset(); // Reset form fields
+            renderCart();
+        });
+
+
+        // --- CONTACT FORM LOGIC (WhatsApp Inquiry) ---
+
+        document.getElementById('whatsapp-contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('contact-name').value.trim();
+            const phone = document.getElementById('contact-phone').value.trim();
+            const message = document.getElementById('contact-message').value.trim();
+
+            if (!name || !phone || !message) {
+                console.error('Validation Error: Please fill in all required fields (Name, Phone, and Message).');
+                return;
+            }
+
+            const whatsappMessage = 
+`*New Inquiry from ECHO OIL Website*
+
+Name: ${name}
+Phone: ${phone}
+
+-- Message --
+${message}`;
+
+            openWhatsApp(whatsappMessage);
+            
+            e.target.reset();
+        });
+        
+        // --- INITIALIZATION ---
+        // Ensure all element listeners run after the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // FIX 1: Attach cart button listener here to ensure the button exists
+            cartFloatButton.addEventListener('click', showCartModal);
+
+            // Menu Toggle (mobile)
+            document.getElementById('menu-button').addEventListener('click', function() {
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.toggle('hidden');
+            });
+
+            // Smooth Scrolling (desktop and mobile menu links)
+            document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId && targetId !== '#') {
+                        document.querySelector(targetId).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        // Close mobile menu if clicked from mobile
+                        document.getElementById('mobile-menu').classList.add('hidden');
+                    }
+                });
+            });
+
+            // Initialize product card behaviors (sizes, quantity, add to cart)
+            initProductCards();
+        });
+
+    </script>
+
+</body>
+</html>
